@@ -1,0 +1,33 @@
+<audio src="http://centova.radio.com.pt:9528/;" controls crossorigin='anonymous'></audio>
+
+<script>
+  fftSize = 4096;
+
+  // for cross browser
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioContext();
+
+  analyserNode = audioCtx.createAnalyser();
+  analyserNode.fftSize = fftSize;
+  amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+  const audioElement = document.querySelector('audio');
+  const track = audioCtx.createMediaElementSource(audioElement);
+
+  track.connect(analyserNode);
+  track.connect(audioCtx.destination);
+  analyserNode.connect(audioCtx.destination)
+
+  translateArray = new Float32Array(3*500000);
+
+  for (var i = 0; i < translateArray.length / 3; i++) {
+    translateArray[i*3] = Math.random() * 6 - 3;
+    translateArray[i*3 + 1] = Math.random() * 6 - 3;
+    // translateArray[i*3 + 2] = Math.random() * 6 - 3;
+  }
+
+</script>
+
+<%= react_component('MyCanvas',
+                    props: {v_shader: vertex_shader,
+                            f_shader: fragment_shader}) %>

@@ -1,0 +1,80 @@
+module DrawHelper
+  def vertex_shader(func = default_func)
+    pre_vertex_shader + 
+      func +
+      post_vertex_shader
+  end
+
+  def pre_vertex_shader
+   'precision highp float;
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+    uniform float time;
+    uniform sampler2D tAudioData;
+    attribute vec3 position;
+    attribute vec2 uv;
+    attribute vec3 translate;
+    varying vec2 vUv;
+    varying float vScale;
+    varying float vTime;
+    float rho() {
+      return sqrt(translate.x * translate.x + translate.y * translate.y + translate.z * translate.z);
+    }
+
+    float theta() {
+      return atan(translate.x, translate.y);
+    }
+
+    void main() {
+      float g = texture2D( tAudioData, vec2(0.1, 0.0) ).r;
+      float f = texture2D( tAudioData, vec2(rho() / 4.0, 0.0) ).r;
+      vec4 mvPosition = modelViewMatrix * vec4( translate, 1.0 );
+      float scale = '
+  end
+
+  def default_func
+    '4.0*sin(4.0*(theta()+5.0*f+rho()*2.*sin(time)))*f'
+  end
+
+  def post_vertex_shader
+    ';
+      scale /= 100.0;
+      vScale = scale;
+      mvPosition.xyz += position * scale;
+      mvPosition.z += 100.*scale;
+      vUv = uv;
+      vTime = time;
+      gl_Position = projectionMatrix * mvPosition;
+    }
+    '
+  end
+
+  def fragment_shader
+    'precision highp float;
+    uniform sampler2D map;
+    uniform sampler2D tAudioData;
+    varying vec2 vUv;
+    varying float vScale;
+    varying float vTime;
+    // HSL to RGB Convertion helpers
+    vec3 HUEtoRGB(float H){
+      H = mod(H,1.0);
+      float R = abs(H * 6.0 - 3.0) - 1.0;
+      float G = 2.0 - abs(H * 6.0 - 2.0);
+      float B = 2.0 - abs(H * 6.0 - 4.0);
+      return clamp(vec3(R,G,B),0.0,1.0);
+    }
+    vec3 HSLtoRGB(vec3 HSL){
+      vec3 RGB = HUEtoRGB(HSL.x);
+      float C = (1.0 - abs(2.0 * HSL.z - 1.0)) * HSL.y;
+      return (RGB - 0.5) * C + HSL.z;
+    }
+    void main() {
+      vec4 diffuseColor = texture2D( map, vUv );
+      float f = texture2D( tAudioData, vUv ).r;
+      gl_FragColor = vec4( diffuseColor.xyz * HSLtoRGB(vec3((vTime / 10. + vScale) * 10.0, 1.0, 0.5)), diffuseColor.w );
+      if ( diffuseColor.w < 0.5 ) discard;
+    }
+    '
+  end
+end
