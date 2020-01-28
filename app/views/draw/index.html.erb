@@ -3,7 +3,6 @@
 <script>
   fftSize = 4096;
 
-  // for cross browser
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioCtx = new AudioContext();
 
@@ -18,16 +17,9 @@
   track.connect(audioCtx.destination);
   analyserNode.connect(audioCtx.destination)
 
-  translateArray = new Float32Array(3*500000);
-
-  for (var i = 0; i < translateArray.length / 3; i++) {
-    translateArray[i*3] = Math.random() * 6 - 3;
-    translateArray[i*3 + 1] = Math.random() * 6 - 3;
-    // translateArray[i*3 + 2] = Math.random() * 6 - 3;
-  }
-
 </script>
 
-<%= react_component('MyCanvas',
+<%= react_component('FullScreenVisualizer',
                     props: {v_shader: vertex_shader,
-                            f_shader: fragment_shader}) %>
+                            f_shader: fragment_shader,
+                            particleCount: 200000}) %>

@@ -5,25 +5,34 @@ import * as THREE from 'three'
 export default function Cloud(props) {
   const mesh = useRef()
   
-  const circleGeometry = new THREE.CircleBufferGeometry(1, 6);
+  const translateArray = useMemo(() => {
+    const array = new Float32Array(3*props.particleCount);
+    for (let i = 0; i < array.length; i++)
+      array[i] = Math.random() * 2 - 1;
+
+    return array;
+  }, []);
+
   const circleTexture = useMemo(() => new THREE.TextureLoader().load('/small/circle.png'), []);
   const audioTexture = useMemo(() => new THREE.DataTexture(amplitudeArray, fftSize / 2, 1, THREE.LuminanceFormat ), []);
+  const indexes = useMemo(() => new THREE.CircleBufferGeometry(1, 6).index);
+  const attributes = useMemo(() => {
+    const attributes = new THREE.CircleBufferGeometry(1, 6).attributes;
+    attributes.translate = new THREE.InstancedBufferAttribute(translateArray, 3);
+    attributes.translate.count = props.particleCount;
+    return attributes;
+  }, []);
 
-  useFrame(() => {
+  useFrame(state => {
     analyserNode.getByteFrequencyData(amplitudeArray);
-    if (Math.random() < 0.01)
-      console.log(amplitudeArray);
     mesh.current.material.uniforms.tAudioData.value.needsUpdate = true;
-    mesh.current.material.uniforms.time.value = performance.now() * 0.0005;
+    mesh.current.material.uniforms.time.value = state.clock.getElapsedTime() * 0.0005;
   })
 
 
   return (
-    <mesh
-      ref={mesh}>
-      <instancedBufferGeometry attach="geometry" attributes={circleGeometry.attributes} index={circleGeometry.index} >
-        <instancedBufferAttribute attachObject={['attributes', 'translate']} count={translateArray.length / 3} array={translateArray} itemSize={3} />
-      </instancedBufferGeometry>
+    <mesh ref={mesh}>
+      <instancedBufferGeometry attach="geometry" index={indexes} attributes={attributes} />
       <rawShaderMaterial attach="material" args={[{
         vertexShader: props.v_shader,
         fragmentShader: props.f_shader,

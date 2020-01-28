@@ -25,15 +25,19 @@ module DrawHelper
       return atan(translate.x, translate.y);
     }
 
+    float r() {
+      return sqrt(translate.x * translate.x + translate.y * translate.y);
+    }
+
     void main() {
       float g = texture2D( tAudioData, vec2(0.1, 0.0) ).r;
-      float f = texture2D( tAudioData, vec2(rho() / 4.0, 0.0) ).r;
+      float f = texture2D( tAudioData, vec2(r() / 1.0, 0.0) ).r;
       vec4 mvPosition = modelViewMatrix * vec4( translate, 1.0 );
       float scale = '
   end
 
   def default_func
-    '4.0*sin(4.0*(theta()+5.0*f+rho()*2.*sin(time)))*f'
+    '4.0*sin(4.0*(theta()+5.0*f+r()*6.*sin(time)))*f'
   end
 
   def post_vertex_shader
@@ -41,7 +45,6 @@ module DrawHelper
       scale /= 100.0;
       vScale = scale;
       mvPosition.xyz += position * scale;
-      mvPosition.z += 100.*scale;
       vUv = uv;
       vTime = time;
       gl_Position = projectionMatrix * mvPosition;
