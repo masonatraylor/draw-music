@@ -17,12 +17,13 @@ module DrawHelper
     varying vec2 vUv;
     varying float vScale;
     varying float vTime;
+    varying float vRho;
     float rho() {
       return sqrt(translate.x * translate.x + translate.y * translate.y + translate.z * translate.z);
     }
 
     float theta() {
-      return atan(translate.x, translate.y);
+      return atan(translate.x, translate.z);
     }
 
     float r() {
@@ -31,22 +32,25 @@ module DrawHelper
 
     void main() {
       float g = texture2D( tAudioData, vec2(0.1, 0.0) ).r;
-      float f = texture2D( tAudioData, vec2(r() / 1.0, 0.0) ).r;
-      vec4 mvPosition = modelViewMatrix * vec4( translate, 1.0 );
+      float f = texture2D( tAudioData, vec2(rho() / 1.5, 0.0) ).r;
       float scale = '
   end
 
   def default_func
-    '4.0*sin(4.0*(theta()+5.0*f+r()*6.*sin(time)))*f'
+    '2.0*f*sign(sin(4.*theta() + time + 2.*sin(10.*rho())))'
   end
 
   def post_vertex_shader
     ';
       scale /= 100.0;
       vScale = scale;
+      vec3 vTranslate = translate;
+      vTranslate.y += 30.*scale;
+      vec4 mvPosition = modelViewMatrix * vec4( vTranslate, 1.0 );
       mvPosition.xyz += position * scale;
       vUv = uv;
       vTime = time;
+      vRho = rho();
       gl_Position = projectionMatrix * mvPosition;
     }
     '
@@ -59,6 +63,7 @@ module DrawHelper
     varying vec2 vUv;
     varying float vScale;
     varying float vTime;
+    varying float vRho;
     // HSL to RGB Convertion helpers
     vec3 HUEtoRGB(float H){
       H = mod(H,1.0);
@@ -75,7 +80,7 @@ module DrawHelper
     void main() {
       vec4 diffuseColor = texture2D( map, vUv );
       float f = texture2D( tAudioData, vUv ).r;
-      gl_FragColor = vec4( diffuseColor.xyz * HSLtoRGB(vec3((vTime / 10. + vScale) * 10.0, 1.0, 0.5)), diffuseColor.w );
+      gl_FragColor = vec4( diffuseColor.xyz * HSLtoRGB(vec3((vTime / -20. + vRho/8. + 2.*vScale) * 10.0, 1.0, 0.5)), diffuseColor.w );
       if ( diffuseColor.w < 0.5 ) discard;
     }
     '

@@ -1,0 +1,13 @@
+<%= audio_tag(@audio_file), controls: true) %>
+<!-- <audio src="http://centova.radio.com.pt:9528/;" controls crossorigin='anonymous'></audio> -->
+<script>
+    AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+    audioElement = document.querySelector('audio');
+    track = audioCtx.createMediaElementSource(audioElement);
+    track.connect(audioCtx.destination);
+</script>
+<%= react_component('FullScreenVisualizer',
+                    props: {v_shader: vertex_shader,
+                            f_shader: fragment_shader,
+                            particleCount: 1000000}) %>

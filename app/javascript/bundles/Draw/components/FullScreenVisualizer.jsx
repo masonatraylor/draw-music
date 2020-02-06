@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom'
-import React, { useRef, useState, useMemo } from 'react'
-import Controls from './Controls'
-import MyCanvas from './MyCanvas'
+import React from 'react'
+import EditorCanvas from './EditorCanvas'
+
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -29,8 +29,7 @@ class ErrorBoundary extends React.Component {
 export default function FullScreenVisualizer(props, railsContext, domNodeId) {
   ReactDOM.render(
     <ErrorBoundary>
-      <Controls />
-      <MyCanvas {...props} />
+      <EditorCanvas {...props} />
     </ErrorBoundary>,
     document.getElementById(domNodeId)
   )

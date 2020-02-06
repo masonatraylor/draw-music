@@ -1,25 +1,4 @@
-<audio src="http://centova.radio.com.pt:9528/;" controls crossorigin='anonymous'></audio>
-
-<script>
-  fftSize = 4096;
-
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioCtx = new AudioContext();
-
-  analyserNode = audioCtx.createAnalyser();
-  analyserNode.fftSize = fftSize;
-  amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-
-  const audioElement = document.querySelector('audio');
-  const track = audioCtx.createMediaElementSource(audioElement);
-
-  track.connect(analyserNode);
-  track.connect(audioCtx.destination);
-  analyserNode.connect(audioCtx.destination)
-
-</script>
-
 <%= react_component('FullScreenVisualizer',
-                    props: {v_shader: vertex_shader,
-                            f_shader: fragment_shader,
-                            particleCount: 200000}) %>
+      props: {v_shader: vertex_shader,
+        f_shader: fragment_shader,
+        particleCount: 1000000}) %>
