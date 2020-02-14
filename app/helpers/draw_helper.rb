@@ -37,7 +37,7 @@ module DrawHelper
   end
 
   def default_func
-    '2.0*f*sign(sin(4.*theta() + time + 2.*sin(10.*rho())))'
+    'sin(rho() + time) + 2.0*f*sign(sin(4.*theta() + time + 2.*sin(10.*rho())))'
   end
 
   def post_vertex_shader
