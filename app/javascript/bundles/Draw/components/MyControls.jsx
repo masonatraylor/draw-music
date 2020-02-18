@@ -7,6 +7,6 @@ export default function MyControls(props) {
   const { camera, gl } = useThree();
 
   return (
-    <orbitControls args={[camera, gl.domElement]} enableZoom={true} />
+    <orbitControls args={[camera, gl.domElement]} enableZoom={false} />
   )
 }
