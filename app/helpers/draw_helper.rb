@@ -37,7 +37,7 @@ module DrawHelper
   end
 
   def default_func
-    'sin(rho() + time) + 2.0*f*sign(sin(4.*theta() + time + 2.*sin(10.*rho())))'
+    '2.0*f*sign(cos(4.*theta() + time + 2.*cos(10.*rho())))'
   end
 
   def post_vertex_shader
@@ -80,7 +80,7 @@ module DrawHelper
     void main() {
       vec4 diffuseColor = texture2D( map, vUv );
       float f = texture2D( tAudioData, vUv ).r;
-      gl_FragColor = vec4( diffuseColor.xyz * HSLtoRGB(vec3((vTime / -20. + vRho/8. + 2.*vScale) * 10.0, 1.0, 0.5)), diffuseColor.w );
+      gl_FragColor = vec4( diffuseColor.xyz * HSLtoRGB(vec3((vRho/8. + 2.*vScale) * 10.0, 1.0, 0.5)), diffuseColor.w );
       if ( diffuseColor.w < 0.5 ) discard;
     }
     '
