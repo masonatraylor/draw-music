@@ -9,9 +9,7 @@ export default function MyCanvas(props) {
   return(
     <Canvas className='h-100' 
       camera={{position:[0, 0, 2]}} 
-      gl={{ alpha: false, antialias: false, }}
-      xr
-      onCreated={({ gl }) => document.body.appendChild(VRButton.createButton(gl))} >
+      gl={{ alpha: false, antialias: false, }}>
 
       <Cloud {...props}/>
       <MyControls />
