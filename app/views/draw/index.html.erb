@@ -1,5 +1,5 @@
-<%= audio_tag('your_childhood_song.mp3', controls: true) %>
-<!-- <audio src="https://centova.radio.com.pt:9528/;" controls crossorigin='anonymous'></audio> -->
+<!-- <%= audio_tag('your_childhood_song.mp3', controls: true) %> -->
+<audio src="http://199.180.75.58:9448/stream" controls crossorigin='anonymous'></audio>
 <script>
     AudioContext = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContext();
@@ -7,6 +7,7 @@
     track = audioCtx.createMediaElementSource(audioElement);
     track.connect(audioCtx.destination);
 </script>
+
 <%= react_component('FullScreenVisualizer',
       props: {v_shader: vertex_shader,
         f_shader: fragment_shader,

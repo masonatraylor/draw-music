@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Button, Slider } from '@material-ui/core';
 
 export default function Editor(props) {
-  const [fft, setFft] = useState(props.fft || Math.pow(2, 14));
-  const [particleCount, setParticleCount] = useState(Math.pow(10, 6));
+  const [fft, setFft] = useState(props.fft);
+  const [particleCount, setParticleCount] = useState(props.particleCount);
 
   const toggle = (() => {
     const states = ['cloud', 'plane', 'line'];
